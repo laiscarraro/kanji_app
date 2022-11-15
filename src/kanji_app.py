@@ -5,6 +5,17 @@ from src.page_files import vocabulary
 
 st.set_page_config(layout="wide")
 
+# Tirar isso daqui
+def top_kanji_freq(self, subtitles, n=0):
+    kanji = ''
+    for s in subtitles:
+        for i in s:
+            if i in list(self.kanji_database[self.key]):
+                kanji += i
+    
+    if n == 0: n = len(kanji)
+    return Counter(kanji).most_common(n)
+
 
 tabs = st.tabs(['Kanji', 'Escrita', 'Vocabulário'])
 
