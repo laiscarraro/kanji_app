@@ -9,3 +9,4 @@ cutlet
 IPython
 unidic-lite # cutlet (https://github.com/polm/cutlet)
 pytest
+srt

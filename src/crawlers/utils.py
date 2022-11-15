@@ -18,6 +18,6 @@ def clean_content(content):
 
 def extract_content(link):
     content = link.contents[0]
-    lower = str(content).lower()
-    clean = clean_content(lower)
+    lower_content = str(content).lower()
+    clean = clean_content(lower_content)
     return clean

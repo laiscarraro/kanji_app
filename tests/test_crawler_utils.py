@@ -25,10 +25,7 @@ def test_extract_root(url):
 
 
 def test_get_parsed_page(url):
-    try:
-        assert utils.get_parsed_page(url) is not None
-    except:
-        pass
+    assert utils.get_parsed_page(url) is not None
 
 
 def test_clean_content(link_content):
