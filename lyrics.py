@@ -7,7 +7,7 @@ import time
 
 # Internal files
 import data.fetch as fetch
-from utils import *
+from src.utils import *
 
 def get_anime_list(letter):
     page = requests.get('https://www.animelyrics.com/anime/_'+letter.upper())

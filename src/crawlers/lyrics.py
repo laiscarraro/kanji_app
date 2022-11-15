@@ -2,13 +2,11 @@ from crawlers.crawler_interface import CrawlerInterface
 
 class Lyrics(CrawlerInterface):
 
-    def get_anime_list(self):
+    def get_anime_df(self, url):
         pass
 
-
-    def get_item_list(self):
+    def get_list_from_anime(self):
         pass
 
-
-    def get_item_content(self, links, names):
+    def get_anime_content(self, links, names):
         pass

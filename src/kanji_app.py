@@ -1,7 +1,7 @@
 import streamlit as st
-from page_files import kanji_recommend
-from page_files import writing
-from page_files import vocabulary
+from src.page_files import kanji_recommend
+from src.page_files import writing
+from src.page_files import vocabulary
 
 st.set_page_config(layout="wide")
 
