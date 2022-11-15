@@ -1,2 +1,0 @@
-# didactic-invention
-intervenção didática

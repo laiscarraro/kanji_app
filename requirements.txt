@@ -1,0 +1,10 @@
+pandas
+bs4
+requests
+seaborn
+numpy
+streamlit
+scikit-learn
+cutlet
+IPython
+unidic-lite # cutlet (https://github.com/polm/cutlet)
