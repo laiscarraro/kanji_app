@@ -57,6 +57,12 @@ class Kanji():
         return freq_order
 
     
+    def get_heisig_order(self):
+        heisig_order = self.get_kanji_sorted_by_col('Heisig_order')
+        heisig_order['heisig_order'] = self.make_order_column()
+        return heisig_order
+
+    
     def get_kanji_order(self):
         grade_order = self.get_grade_order()
         strokes_order = self.get_strokes_order()
