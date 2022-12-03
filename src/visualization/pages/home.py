@@ -1,10 +1,13 @@
 import streamlit as st
 import pandas as pd
 
+from modules.greeter import Greeter
+
 def render_page(session):
+    greeter = Greeter()
     user = session.get_user()
 
-    st.markdown('## Bem-vindo/a, ' + user.get_name() + '!')
+    st.markdown('## ' + greeter.greet(user))
     st.markdown('Você tem ' + str(user.count_animes()) + ' animes.')
 
     st.dataframe(user.get_animes_df())
