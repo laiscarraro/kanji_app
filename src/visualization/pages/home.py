@@ -1,19 +1,18 @@
 import streamlit as st
 import pandas as pd
 
-def render_page(user):
-    user_name = user.user_name.values[0]
-    st.markdown('## Bem-vindo/a, ' + user_name + '!')
+def render_page(session):
+    user = session.get_user()
 
-    user_anime = pd.read_csv('data/user_anime.csv', sep=';')
-    animes = pd.read_csv('data/anime.csv', sep=';')
+    st.markdown('## Bem-vindo/a, ' + user.get_name() + '!')
+    st.markdown('Você tem ' + user.count_animes() + ' animes.')
 
-    user_animes = pd.merge(
-        user_anime[user_anime.user_id == user.user_id], 
-        animes, on='anime_id'
-    )
+    st.dataframe(user.get_animes_df())
 
-    st.markdown('Você tem ' + str(len(user_animes)) + ' animes.')
-
-    st.dataframe(user_animes)
-    
+    with st.expander('Adicionar animes'):
+        available_animes = pd.read_csv('data/animes.csv', sep=';')
+        st.write(available_animes[
+            ~available_animes.anime_id.isin(
+                user.get_animes_df().id
+            )
+        ])

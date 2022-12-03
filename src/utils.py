@@ -1,5 +1,6 @@
 # External libs
 import zipfile, io, requests
+import pandas as pd
 
 def extract_zip(url, max=100):
     '''
