@@ -1,4 +1,4 @@
-from src.crawlers import subtitles
+from modules.crawlers import subtitles
 import pytest
 
 # Fixtures

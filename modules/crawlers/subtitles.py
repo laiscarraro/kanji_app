@@ -1,6 +1,6 @@
-from src.crawlers.utils import get_parsed_page
-from src.crawlers.utils import extract_content
-from src.crawlers.utils import extract_root
+from modules.crawlers.utils import get_parsed_page
+from modules.crawlers.utils import extract_content
+from modules.crawlers.utils import extract_root
 
 # External libs
 import requests, os

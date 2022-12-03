@@ -5,7 +5,7 @@ def render_page(session):
     user = session.get_user()
 
     st.markdown('## Bem-vindo/a, ' + user.get_name() + '!')
-    st.markdown('Você tem ' + user.count_animes() + ' animes.')
+    st.markdown('Você tem ' + str(user.count_animes()) + ' animes.')
 
     st.dataframe(user.get_animes_df())
 

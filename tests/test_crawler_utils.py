@@ -1,4 +1,4 @@
-from src.crawlers import utils
+from modules.crawlers import utils
 import pytest
 
 # Fixtures

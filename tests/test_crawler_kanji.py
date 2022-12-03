@@ -1,4 +1,4 @@
-from src.crawlers import kanji
+from modules.crawlers import kanji
 import pytest
 
 # Fixtures
