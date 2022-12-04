@@ -12,7 +12,7 @@ class UserBuilder():
         self.id = None
         self.name = None
         self.login = None
-        self.animes = None
+        self.animes = []
     
     @staticmethod
     def get_user():

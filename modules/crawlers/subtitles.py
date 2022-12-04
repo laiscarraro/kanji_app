@@ -51,15 +51,16 @@ class Subtitles():
     def get_anime_df(self):
         anime_df = pd.DataFrame(
             self.get_animes(),
-            columns=['name', 'path']
+            columns=['anime_name', 'anime_path']
         )
+        anime_df['anime_id'] = anime_df.index
         return anime_df
 
 
     def filter_anime(self, anime_name):
         anime_name = anime_name.lower()
         return self.anime_df[
-            self.anime_df.name == anime_name
+            self.anime_df.anime_name == anime_name
         ]
 
 
@@ -71,7 +72,7 @@ class Subtitles():
     def get_path(self, anime):
         if self.anime_in_df(anime):
             filtered_df = self.filter_anime(anime)
-            path = filtered_df['path'].values[0]
+            path = filtered_df['anime_path'].values[0]
         else:
             path = None
         return path
@@ -123,12 +124,12 @@ class Subtitles():
     def get_subtitle_files_df(self, anime):
         names, links = self.get_subtitle_files(anime)
         subtitle_files_df = pd.DataFrame(
-            [], columns=['anime', 'subtitle_file_name', 'subtitle_file_link']
+            [], columns=['anime_name', 'subtitle_file_name', 'subtitle_file_link']
         )
 
         subtitle_files_df['subtitle_file_name'] = pd.Series(names)
         subtitle_files_df['subtitle_file_link'] = pd.Series(links)
-        subtitle_files_df['anime'] = anime
+        subtitle_files_df['anime_name'] = anime
 
         return subtitle_files_df
 
@@ -172,7 +173,7 @@ class Subtitles():
 
         subtitle_df = pd.DataFrame(
             [item for sublist in episode_list for item in sublist],
-            columns=['anime', 'episodio', 'start_time', 'end_time', 'content']
+            columns=['anime_name', 'episode', 'start_time', 'end_time', 'content']
         )
 
         return subtitle_df

@@ -67,4 +67,11 @@ def test_build_not_found(test_user_builder):
         not isinstance(user, User) and
         user is None
     )
+
+def test_build_with_no_animes(test_user_builder):
+    user = test_user_builder.from_login('pablito').build()
+    assert (
+        user is not None and
+        user.get_animes() == []
+    )
     

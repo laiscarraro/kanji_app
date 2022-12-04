@@ -46,6 +46,15 @@ def test_get_animes(test_user):
         isinstance(test_user_animes[1], Anime)
     )
 
+def test_set_animes(test_user):
+    animes_before = test_user.get_animes()
+    test_user.set_animes(None)
+    animes_after = test_user.get_animes()
+    assert (
+        animes_before is not None and
+        animes_after is None
+    )
+
 def test_count_animes(test_user):
     assert test_user.count_animes() == 2
 
@@ -54,4 +63,10 @@ def test_get_animes_df(test_user):
     assert (
         len(animes_df) == 2
         and animes_df.id.values[0] == 1
+    )
+
+def test_has_anime(test_user):
+    assert (
+        test_user.has_anime(1) and
+        not test_user.has_anime(1000000)
     )

@@ -20,6 +20,9 @@ class User:
     def get_animes(self):
         return self.animes
     
+    def set_animes(self, animes):
+        self.animes = animes
+    
     def count_animes(self):
         return len(self.animes)
     
@@ -37,3 +40,10 @@ class User:
         )
         
         return anime_df
+    
+    def has_anime(self, anime_id):
+        if self.count_animes() > 0:
+            ids = self.get_animes_df().id.values
+            return anime_id in ids
+        else:
+            return False
