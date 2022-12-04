@@ -1,11 +1,12 @@
 from modules.anime import Anime
+from modules.subtitle_handler import SubtitleHandler
 import pandas as pd
 
 class AnimeBuilder():
 
     def __init__(self):
         self.animes_df = pd.read_csv('data/animes.csv', sep=';')
-        self.subtitles_df = pd.read_csv('data/subtitles.csv', sep=';')
+        self.subtitle_handler = SubtitleHandler()
 
         self.id = None
         self.name = None
@@ -29,9 +30,7 @@ class AnimeBuilder():
         self.name = anime_information.anime_name.values[0]
     
     def set_subtitles(self):
-        self.subtitles = self.subtitles_df[
-            self.subtitles_df.anime_name == self.name
-        ]
+        self.subtitles = self.subtitle_handler.get_subtitles(self.name)
     
     def build(self):
         self.set_name()

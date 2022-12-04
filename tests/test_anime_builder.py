@@ -35,7 +35,7 @@ def test_set_name(test_anime_builder):
     assert test_anime_builder.name == info.anime_name.values[0]
 
 def test_set_subtitles(test_anime_builder):
-    test_anime_builder.from_id(1)
+    test_anime_builder.from_id(1619)
     subtitles_before = test_anime_builder.subtitles
     test_anime_builder.set_name()
     test_anime_builder.set_subtitles()

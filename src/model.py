@@ -1,5 +1,4 @@
 # External libs
-import numpy as np
 import pandas as pd
 
 # Model imports
@@ -8,12 +7,13 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import ElasticNet
 from sklearn.preprocessing import StandardScaler
 
-# Internal files
-import data.preprocess as preprocess
+from modules.crawlers.kanji import Kanji
 
 def anime_order(anime_freq_raw):
+    kanji_data = Kanji()
+
     anime_freq = pd.DataFrame(anime_freq_raw, columns=['Kanji', 'anime_freq'])
-    df = pd.merge(preprocess.kanji_database, anime_freq, on='Kanji', how='left').fillna(0)
+    df = pd.merge(kanji_data.kanji_database, anime_freq, on='Kanji', how='left').fillna(0)
 
     features = ['Strokes', 'Grade', 'Radical Freq.', 'On Ratio with Proper Nouns', 'Left Entropy', 'Right Entropy']
 
@@ -42,6 +42,6 @@ def anime_order(anime_freq_raw):
     data_norm['Kanji importance'] = data_norm[new_features].sum(axis=1)
     data_norm['Kanji'] = df['Kanji']
     suggested_order = pd.DataFrame(data_norm.sort_values(by='Kanji importance')['Kanji'])
-    suggested_order['suggested_order'] = list(range(1, len(preprocess.kanji_database)+1))
+    suggested_order['suggested_order'] = list(range(1, len(kanji_data.kanji_database)+1))
 
     return suggested_order

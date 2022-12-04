@@ -53,7 +53,7 @@ def test_get_anime_df(subtitle_crawler):
     assert (
         len(anime_df) > 0 and
         len(anime_df.columns) > 0 and
-        len(anime_df.name.values) > 0
+        len(anime_df.anime_name.values) > 0
     )
 
 
@@ -61,7 +61,7 @@ def test_filter_anime(subtitle_crawler, anime):
     filtered = subtitle_crawler.filter_anime(anime)
     assert (
         len(filtered) == 1 and
-        filtered['name'].values[0] == anime.lower()
+        filtered['anime_name'].values[0] == anime.lower()
     )
 
 
@@ -130,7 +130,7 @@ def test_get_subtitle_files_df(subtitle_crawler, anime):
     subtitle_files_df = subtitle_crawler.get_subtitle_files_df(anime)
     assert (
         len(subtitle_files_df) > 0 and
-        subtitle_files_df['anime'].values[0] == anime
+        subtitle_files_df['anime_name'].values[0] == anime
     )
 
 
@@ -156,5 +156,5 @@ def test_get_subtitle_df(subtitle_crawler, anime):
     subtitle_df = subtitle_crawler.get_subtitle_df(anime)
     assert (
         len(subtitle_df) > 0
-        and subtitle_df['anime'].values[0] == anime
+        and subtitle_df['anime_name'].values[0] == anime
     )

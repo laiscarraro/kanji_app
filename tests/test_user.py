@@ -68,5 +68,5 @@ def test_get_animes_df(test_user):
 def test_has_anime(test_user):
     assert (
         test_user.has_anime(1) and
-        not test_user.has_anime(1000000)
+        not test_user.has_anime(100000000000)
     )

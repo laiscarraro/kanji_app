@@ -164,16 +164,23 @@ class Subtitles():
         subtitle_files_df = self.get_subtitle_files_df(anime)
         subtitle_content, filenames = self.download_subtitle_files(subtitle_files_df)
         
-        episode_list = [
-            [
-                (anime, filenames[i], sub.start, sub.end, sub.content)
-                for sub in srt.parse(subtitle_content[i])
-            ] for i in range(len(filenames))
-        ]
+        episode_list = []
+
+        for i in range(len(filenames)):
+            try:
+                subtitles = srt.parse(subtitle_content[i])
+                episode_subs = []
+                for sub in subtitles:
+                    episode_subs = episode_subs + [
+                        (anime, filenames[i], sub.start, sub.end, sub.content)
+                    ]
+                episode_list += [episode_subs]
+            except:
+                pass
 
         subtitle_df = pd.DataFrame(
             [item for sublist in episode_list for item in sublist],
-            columns=['anime_name', 'episode', 'start_time', 'end_time', 'content']
+            columns=['anime_name', 'filename', 'start_time', 'end_time', 'content']
         )
 
         return subtitle_df
