@@ -17,6 +17,30 @@ class Kanji():
         self.kanji_metadata = pd.read_csv(KANJI_METADATA_URL, sep=';')
         self.heisig_order = pd.read_csv(HEISIG_ORDER_URL)
         self.kanji_alive = pd.read_csv(KANJI_ALIVE_URL)
+        self.preprocess_kanji_alive()
+    
+
+    def preprocess_kanji_alive(self):
+        new_names = {
+            'kanji': 'Kanji',
+            'kname': 'Name',
+            'kstroke': 'Strokes',
+            'kmeaning': 'Meaning',
+            'kgrade': 'Grade',
+            'kunyomi_ja': 'Kunyomi',
+            'kunyomi': 'Kunyomi (Romaji)',
+            'onyomi_ja': 'Onyomi',
+            'onyomi': 'Onyomi (Romaji)',
+            'examples': 'Examples',
+            'radical': 'Radical',
+            'rad_name_ja': 'Radical Name',
+            'rad_name': 'Radical Name (Romaji)',
+            'rad_meaning': 'Radical Meaning'
+        }
+        self.kanji_alive = self.kanji_alive[new_names.keys()]
+        self.kanji_alive.rename(
+            columns=new_names, inplace=True
+        )
     
 
     def set_kanji_database(self):

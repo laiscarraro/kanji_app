@@ -1,4 +1,4 @@
-from modules import subtitle_handler
+from modules.handlers import subtitle_handler
 import pytest
 
 # Fixtures
@@ -24,7 +24,7 @@ def test_update_subtitles_df(test_handler):
     test_handler.update_subtitles_df(new_df)
     new_df = test_handler.subtitles_df
 
-    assert 2*len(old_df) == len(new_df)
+    assert len(new_df) >= len(old_df)
 
     old_df.to_csv('data/subtitles.csv', sep=';', index=None)
 
@@ -37,7 +37,7 @@ def test_get_subtitles(test_handler):
 
     assert (
         len(old_df) == len(intermediate_df) and
-        len(new_df) > len(intermediate_df)
+        len(new_df) >= len(intermediate_df)
     )
 
     old_df.to_csv('data/subtitles.csv', sep=';', index=None)

@@ -1,6 +1,6 @@
 import streamlit as st
 from modules.greeter import Greeter
-from modules.anime_manager import AnimeManager
+from modules.managers.anime_manager import AnimeManager
 
 def render_page(session):
     greeter = Greeter()

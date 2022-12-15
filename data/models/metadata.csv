@@ -1,0 +1,6 @@
+filename;anime_ids;features
+test;62;Strokes,Grade
+kanji_order_90b95579-f8f9-4923-bd5d-8698d0dc2eaa.parquet;1619,62;Strokes,Grade,On Ratio with Proper Nouns,Left Entropy,Right Entropy
+kanji_order_f09a4aa7-cccc-411a-97b8-842226ecbfc7.parquet;1374,1619;Strokes,Grade,On Ratio with Proper Nouns,Left Entropy,Right Entropy
+kanji_order_83952683-ad03-4aa4-8cad-f9921d8024f3.parquet;1374,1619;Strokes,Grade,On Ratio with Proper Nouns
+kanji_order_508f6811-34b1-4b7e-a327-2b0219666b56.parquet;1374;Strokes,Grade,On Ratio with Proper Nouns

@@ -9,32 +9,31 @@ from sklearn.preprocessing import StandardScaler
 
 class KanjiOrder():
 
-    def __init__(self, anime_list):
+    def __init__(self, anime_list, features):
         self.kanji_crawler = kanji.Kanji()
         self.anime_list = anime_list
-        self.possible_features = [
-            'Strokes', 'Grade',
-            'On Ratio with Proper Nouns',
-            'Left Entropy', 'Right Entropy'
-        ]
-
-        self.features = self.possible_features
+        self.features = features + ['Radical Freq.']
         self.target = 'Heisig_order'
+        self.make_unified_subtitles()
     
-    def get_possible_features(self):
-        return self.possible_features
-    
-    def set_features(self, features):
-        self.features = features
-    
-    # TODO escrever essa função
     def make_unified_subtitles(self):
         self.unified_subtitles = None
+        for anime in self.anime_list:
+            self.unified_subtitles = pd.concat(
+                [self.unified_subtitles, anime.get_subtitles()],
+                ignore_index=True
+            )
 
-    # TODO escrever essa função
     def make_kanji_frequency_in_animes(self):
         all_subtitles = self.unified_subtitles.content.str.cat(sep=';')
-        self.kanji_frequency_in_animes = Counter(all_subtitles)
+        counter_kanji = Counter(all_subtitles).most_common(len(all_subtitles))
+        self.kanji_frequency_in_animes = pd.DataFrame(
+            [
+                [i for i,j in counter_kanji],
+                list(range(1, len(all_subtitles) + 1))
+            ]
+        ).transpose()
+        self.kanji_frequency_in_animes.columns = ['Kanji', 'Frequency in animes']
     
     def make_kanji_data(self):
         self.kanji_data = pd.merge(
@@ -43,7 +42,7 @@ class KanjiOrder():
         ).fillna(0)
     
     def split_dataset(self):
-        X = self.kanji_data[self.features + ['Radical Freq.']]
+        X = self.kanji_data[self.features]
         y = self.kanji_data[self.target]
 
         self.x_train, self.x_test, self.y_train, self.y_test = train_test_split(
@@ -85,11 +84,10 @@ class KanjiOrder():
         self.anime_model['Kanji importance'] = self.anime_model[self.new_features].sum(axis=1)
         self.anime_model['Kanji'] = self.kanji_data['Kanji']
         suggested_order = pd.DataFrame(self.anime_model.sort_values(by='Kanji importance')['Kanji'])
-        suggested_order['suggested_order'] = list(range(1, len(self.kanji_crawler.kanji_database)+1))
+        suggested_order['Suggested Order'] = list(range(1, len(self.kanji_crawler.kanji_database)+1))
         self.suggested_order = suggested_order
     
-    def get_kanji_order(self, features):
-        self.set_features(features)
+    def get_kanji_order(self):
         self.make_unified_subtitles()
         self.make_kanji_frequency_in_animes()
         self.make_kanji_data()

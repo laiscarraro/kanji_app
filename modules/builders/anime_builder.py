@@ -1,5 +1,5 @@
 from modules.anime import Anime
-from modules.subtitle_handler import SubtitleHandler
+from modules.handlers.subtitle_handler import SubtitleHandler
 import pandas as pd
 
 class AnimeBuilder():

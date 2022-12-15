@@ -1,5 +1,5 @@
 from modules.builders import user_builder
-from modules import anime_manager
+from modules.managers import anime_manager
 import pytest
 import pandas as pd
 
