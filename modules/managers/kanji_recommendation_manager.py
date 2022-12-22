@@ -6,6 +6,7 @@ class KanjiRecommendationManager():
 
     def __init__(self, user):
         self.user = user
+        self.subtitles = self.user.get_unified_subtitles()
         self.handler = KanjiRecommendationHandler()
         self.user_configuration = pd.read_csv('data/models/user_configuration.csv', sep=';')
     
@@ -16,6 +17,16 @@ class KanjiRecommendationManager():
             if anime.get_id() in anime_ids
         ]
         return selected_animes
+    
+    def get_subtitles_from_animes(self, selected_animes):
+        names = [
+            anime.get_name() 
+            for anime in selected_animes
+        ]
+        selected_subs = self.subtitles[
+            self.subtitles.anime_name.isin(names)
+        ]
+        return selected_subs
     
     def search_latest_model(self):
         return self.user_configuration[
@@ -45,8 +56,10 @@ class KanjiRecommendationManager():
     
     def handle_model_filename(self, anime_ids, features):
         anime_list = self.get_animes_from_ids(anime_ids)
+        subtitles = self.get_subtitles_from_animes(anime_list)
         self.handler.set_anime_list(anime_list)
         self.handler.set_features(features)
+        self.handler.set_subtitles(subtitles)
         return self.handler.get_model_filename()
     
     def make_default_model(self):

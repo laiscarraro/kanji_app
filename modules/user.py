@@ -47,3 +47,12 @@ class User:
             return anime_id in ids
         else:
             return False
+    
+    def get_unified_subtitles(self):
+        unified_subtitles = None
+        for anime in self.animes:
+            unified_subtitles = pd.concat(
+                [unified_subtitles, anime.get_subtitles()],
+                ignore_index=True
+            )
+        return unified_subtitles

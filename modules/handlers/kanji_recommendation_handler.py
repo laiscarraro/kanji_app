@@ -12,6 +12,7 @@ class KanjiRecommendationHandler():
         ]
         self.features = self.possible_features
         self.anime_list = []
+        self.subtitles = None
         self.metadata = pd.read_csv('data/models/metadata.csv', sep=';')
         self.metadata['anime_ids'] =  self.metadata['anime_ids'].apply(str)
 
@@ -23,6 +24,9 @@ class KanjiRecommendationHandler():
     
     def set_anime_list(self, anime_list):
         self.anime_list = anime_list
+    
+    def set_subtitles(self, subtitles):
+        self.subtitles = subtitles
 
     def search_trained_model_filename(self):
         anime_ids = ','.join([
@@ -63,7 +67,7 @@ class KanjiRecommendationHandler():
         return filename
     
     def train_model(self):
-        model = kanji_order.KanjiOrder(self.anime_list, self.features)
+        model = kanji_order.KanjiOrder(self.subtitles, self.features)
         filename = self.save_model(
             model.get_kanji_order()
         )

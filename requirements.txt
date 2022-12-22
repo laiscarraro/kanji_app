@@ -2,6 +2,7 @@ pandas
 bs4
 requests
 seaborn
+mecab
 numpy
 streamlit
 scikit-learn
@@ -9,5 +10,10 @@ cutlet
 IPython
 unidic-lite # cutlet (https://github.com/polm/cutlet)
 pytest
+pykakasi
 srt
-janome
+streamlit-aggrid
+fugashi[unidic-lite]
+furigana
+googletrans==3.1.0a0
+gtts

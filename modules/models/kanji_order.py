@@ -9,23 +9,14 @@ from sklearn.preprocessing import StandardScaler
 
 class KanjiOrder():
 
-    def __init__(self, anime_list, features):
+    def __init__(self, subtitles, features):
         self.kanji_crawler = kanji.Kanji()
-        self.anime_list = anime_list
         self.features = features + ['Radical Freq.']
         self.target = 'Heisig_order'
-        self.make_unified_subtitles()
-    
-    def make_unified_subtitles(self):
-        self.unified_subtitles = None
-        for anime in self.anime_list:
-            self.unified_subtitles = pd.concat(
-                [self.unified_subtitles, anime.get_subtitles()],
-                ignore_index=True
-            )
+        self.subtitles = subtitles
 
     def make_kanji_frequency_in_animes(self):
-        all_subtitles = self.unified_subtitles.content.str.cat(sep=';')
+        all_subtitles = self.subtitles.content.str.cat(sep=';')
         counter_kanji = Counter(all_subtitles).most_common(len(all_subtitles))
         self.kanji_frequency_in_animes = pd.DataFrame(
             [
@@ -88,7 +79,6 @@ class KanjiOrder():
         self.suggested_order = suggested_order
     
     def get_kanji_order(self):
-        self.make_unified_subtitles()
         self.make_kanji_frequency_in_animes()
         self.make_kanji_data()
         self.split_dataset()
