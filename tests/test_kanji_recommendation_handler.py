@@ -8,7 +8,14 @@ import pytest
 
 @pytest.fixture
 def test_handler():
-    return kanji_recommendation_handler.KanjiRecommendationHandler()
+    h = kanji_recommendation_handler.KanjiRecommendationHandler()
+    subs = pd.read_csv('data/subtitles.csv', sep=';')
+    h.set_subtitles(
+        subs[subs.anime_name.isin(
+            ['shigatsu wa kimi no uso', 'yuri!!! on ice']
+        )]
+    )
+    return h
 
 
 # Tests
@@ -36,43 +43,30 @@ def test_set_features(test_handler):
 
 def test_set_anime_list(test_handler):
     before = test_handler.anime_list
-    test_handler.set_anime_list([1, 2, 3])
+    test_handler.set_anime_list([2031, 1619])
     after = test_handler.anime_list
 
     assert (
         len(before) == 0 and
         len(before) < len(after)
-        and len(after) == 3
-        and after[0] == 1
+        and len(after) == 2
+        and after[0] == 2031
     )
 
 def test_search_trained_model_filename(test_handler):
-    model_exists = {
-        'animes': [
-            anime_builder.AnimeBuilder().get_anime().from_id(62).build()
-        ],
-        'features': ['Strokes', 'Grade']
-    }
     model_not_exists = {
         'animes': [
-            anime_builder.AnimeBuilder().get_anime().from_id(1).build(),
-            anime_builder.AnimeBuilder().get_anime().from_id(2).build()
+            anime_builder.AnimeBuilder().get_anime().from_id(2031).build(),
+            anime_builder.AnimeBuilder().get_anime().from_id(1619).build()
         ],
         'features': ['f1']
     }
-
-    test_handler.set_anime_list(model_exists['animes'])
-    test_handler.set_features(model_exists['features'])
-    first = test_handler.search_trained_model_filename()
 
     test_handler.set_anime_list(model_not_exists['animes'])
     test_handler.set_features(model_not_exists['features'])
     second = test_handler.search_trained_model_filename()
 
-    assert (
-        first is not None and second is None
-        and first == 'test'
-    )
+    assert second is None
 
 def test_update_metadata(test_handler):
     metadata_before = test_handler.metadata.copy()
@@ -105,9 +99,8 @@ def test_train_model(test_handler):
     metadata_before = test_handler.metadata.copy()
     model = {
         'animes': [
-            anime_builder.AnimeBuilder().get_anime().from_id(1).build(),
-            anime_builder.AnimeBuilder().get_anime().from_id(2).build(),
-            anime_builder.AnimeBuilder().get_anime().from_id(3).build()
+            anime_builder.AnimeBuilder().get_anime().from_id(2031).build(),
+            anime_builder.AnimeBuilder().get_anime().from_id(1619).build()
         ],
         'features': ['Strokes', 'Grade']
     }
@@ -129,9 +122,8 @@ def test_get_model_filename(test_handler):
     metadata_before = test_handler.metadata.copy()
     model1 = {
         'animes': [
-            anime_builder.AnimeBuilder().get_anime().from_id(1).build(),
-            anime_builder.AnimeBuilder().get_anime().from_id(2).build(),
-            anime_builder.AnimeBuilder().get_anime().from_id(3).build()
+            anime_builder.AnimeBuilder().get_anime().from_id(2031).build(),
+            anime_builder.AnimeBuilder().get_anime().from_id(1619).build()
         ],
         'features': ['Strokes', 'Grade']
     }
@@ -141,7 +133,7 @@ def test_get_model_filename(test_handler):
 
     model2 = {
         'animes': [
-            anime_builder.AnimeBuilder().get_anime().from_id(62).build()
+            anime_builder.AnimeBuilder().get_anime().from_id(1619).build()
         ],
         'features': ['Strokes', 'Grade']
     }
@@ -150,9 +142,12 @@ def test_get_model_filename(test_handler):
     filename2 = test_handler.get_model_filename()
 
     assert (
-        filename2 == 'test' and filename1 is not None
+        filename2 is not None and filename1 is not None
         and len(filename1) > len('kanji_model_')
     )
-
-    os.remove('data/models/'+filename1)
+    try:
+        os.remove('data/models/'+filename1)
+        os.remove('data/models/'+filename2)
+    except:
+        pass
     metadata_before.to_csv('data/models/metadata.csv', sep=';', index=None)

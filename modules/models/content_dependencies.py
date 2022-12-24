@@ -9,5 +9,5 @@ class ContentDependencies():
     def make_bag_of_kanji(self):
         self.kanji_vectorizer = CountVectorizer(analyzer='char')
         self.bag_of_kanji = self.kanji_vectorizer.fit_transform(
-            self.subtitles.content
+            self.subtitles.content.fillna('')
         )

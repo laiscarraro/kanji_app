@@ -2,11 +2,12 @@ import pandas as pd
 
 class User:
 
-    def __init__(self, id, name, login, animes):
+    def __init__(self, id, name, login, animes, kanji):
         self.id = id
         self.name = name
         self.login = login
         self.animes = animes
+        self.kanji = kanji
 
     def get_id(self):
         return self.id
@@ -19,6 +20,9 @@ class User:
 
     def get_animes(self):
         return self.animes
+    
+    def get_kanji(self):
+        return self.kanji
     
     def set_animes(self, animes):
         self.animes = animes
@@ -56,3 +60,19 @@ class User:
                 ignore_index=True
             )
         return unified_subtitles
+    
+    def update_kanji(self, kanji):
+        user_kanji = pd.read_csv('data/user_kanji.csv', sep=';')
+        not_this_user = user_kanji[
+            user_kanji.user_id != self.get_id()
+        ]
+        new_kanji = pd.DataFrame(
+            [(self.get_id(), kanji)],
+            columns=user_kanji.columns
+        )
+        self.kanji = kanji
+        final_df = pd.concat(
+            [not_this_user, new_kanji],
+            ignore_index=True
+        )
+        final_df.to_csv('data/user_kanji.csv', sep=';', index=None)

@@ -1,15 +1,21 @@
 from modules.models import content_dependencies
-import os
+from modules.session import Session
 import pandas as pd
 import pytest
 
 # Fixtures
 
 @pytest.fixture
-def orderer():
-    subtitles = pd.read_csv('data/subtitles.csv', sep=';')
-    subtitles = subtitles[subtitles.anime_name == 'ousama ranking']
-    return content_dependencies.ContentDependencies(subtitles)
+def depend():
+    session = Session()
+    session.set_user('laiscarraro')
+    user = session.get_user()
+    return content_dependencies.ContentDependencies(
+        user.get_unified_subtitles()
+    )
 
 
 # Tests
+
+def test_make_bag_of_kanji(depend):
+    assert depend.bag_of_kanji is not None

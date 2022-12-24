@@ -33,65 +33,65 @@ def test_get_available_animes(test_anime_manager):
     available = test_anime_manager.get_available_animes()
     assert (
         1619 not in available.anime_id.values and
-        3 in available.anime_id.values
+        2031 in available.anime_id.values
     )
 
 def test_new_anime(test_anime_manager):
-    new = test_anime_manager.new_anime(3)
-    assert new.id == 3
+    new = test_anime_manager.new_anime(2031)
+    assert new.id == 2031
 
 def test_add_anime_to_user(test_anime_manager):
-    has_before = test_anime_manager.user.has_anime(3)
-    test_anime_manager.add_anime_to_user(3)
-    has_after = test_anime_manager.user.has_anime(3)
+    has_before = test_anime_manager.user.has_anime(2031)
+    test_anime_manager.add_anime_to_user(2031)
+    has_after = test_anime_manager.user.has_anime(2031)
     assert not has_before and has_after
 
-    test_anime_manager.remove_anime_from_user(3)
+    test_anime_manager.remove_anime_from_user(2031)
 
 def test_add_anime_to_dataframe(test_anime_manager, user_animes, test_user):
-    has_before = 3 in user_animes.anime_id.values
-    test_anime_manager.add_anime_to_dataframe(3)
+    has_before = 2031 in user_animes.anime_id.values
+    test_anime_manager.add_anime_to_dataframe(2031)
 
     user_animes_after = pd.read_csv('data/user_anime.csv', sep=';')
     user_animes = user_animes_after[user_animes_after.user_id == test_user.id]
-    has_after = 3 in user_animes.anime_id.values
+    has_after = 2031 in user_animes.anime_id.values
     assert not has_before and has_after
 
-    test_anime_manager.remove_anime_from_dataframe(3)
+    test_anime_manager.remove_anime_from_dataframe(2031)
 
 def test_add_anime(test_anime_manager, user_animes, test_user):
     has_before = (
-        test_anime_manager.user.has_anime(3) and
-        3 in user_animes.anime_id.values
+        test_anime_manager.user.has_anime(2031) and
+        2031 in user_animes.anime_id.values
     )
-    added = test_anime_manager.add_anime(3)
+    added = test_anime_manager.add_anime(2031)
     user_animes_after = pd.read_csv('data/user_anime.csv', sep=';')
     user_animes = user_animes_after[user_animes_after.user_id == test_user.id]
     has_after = (
-        test_anime_manager.user.has_anime(3) and
-        3 in user_animes.anime_id.values
+        test_anime_manager.user.has_anime(2031) and
+        2031 in user_animes.anime_id.values
     )
     assert not has_before and added and has_after
 
-    test_anime_manager.remove_anime_from_dataframe(3)
-    test_anime_manager.remove_anime_from_user(3)
+    test_anime_manager.remove_anime_from_dataframe(2031)
+    test_anime_manager.remove_anime_from_user(2031)
 
 def test_add_anime_user_with_no_anime(test_anime_manager_no_animes, user_animes, test_user_no_animes):
     has_before = (
-        test_anime_manager_no_animes.user.has_anime(3) and
-        3 in user_animes.anime_id.values
+        test_anime_manager_no_animes.user.has_anime(2031) and
+        2031 in user_animes.anime_id.values
     )
-    added = test_anime_manager_no_animes.add_anime(3)
+    added = test_anime_manager_no_animes.add_anime(2031)
     user_animes_after = pd.read_csv('data/user_anime.csv', sep=';')
     user_animes = user_animes_after[user_animes_after.user_id == test_user_no_animes.id]
     has_after = (
-        test_anime_manager_no_animes.user.has_anime(3) and
-        3 in user_animes.anime_id.values
+        test_anime_manager_no_animes.user.has_anime(2031) and
+        2031 in user_animes.anime_id.values
     )
     assert not has_before and added and has_after
 
-    test_anime_manager_no_animes.remove_anime_from_dataframe(3)
-    test_anime_manager_no_animes.remove_anime_from_user(3)
+    test_anime_manager_no_animes.remove_anime_from_dataframe(2031)
+    test_anime_manager_no_animes.remove_anime_from_user(2031)
 
 def test_remove_anime_from_user(test_anime_manager):
     has_before = test_anime_manager.user.has_anime(62)

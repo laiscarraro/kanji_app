@@ -8,23 +8,13 @@ import pytest
 @pytest.fixture
 def kanji_model():
     user = user_builder.UserBuilder.get_user().from_login('test_user').build()
-    kanji_model = kanji_order.KanjiOrder(user.get_animes(), ['Strokes', 'Grade'])
+    kanji_model = kanji_order.KanjiOrder(user.get_unified_subtitles(), ['Strokes', 'Grade'])
     return kanji_model
 
 
 # Tests
 
-def test_make_unified_subtitles(kanji_model):
-    kanji_model.make_unified_subtitles()
-    assert (
-        isinstance(
-            kanji_model.unified_subtitles,
-            pd.DataFrame
-        )
-    )
-
 def test_make_kanji_frequency_in_animes(kanji_model):
-    kanji_model.make_unified_subtitles()
     kanji_model.make_kanji_frequency_in_animes()
     assert (
         len(kanji_model.kanji_frequency_in_animes.dropna()) > 0
@@ -34,7 +24,6 @@ def test_make_kanji_frequency_in_animes(kanji_model):
     )
 
 def test_make_kanji_data(kanji_model):
-    kanji_model.make_unified_subtitles()
     kanji_model.make_kanji_frequency_in_animes()
     kanji_model.make_kanji_data()
     assert (
@@ -43,7 +32,6 @@ def test_make_kanji_data(kanji_model):
     )
 
 def test_split_dataset(kanji_model):
-    kanji_model.make_unified_subtitles()
     kanji_model.make_kanji_frequency_in_animes()
     kanji_model.make_kanji_data()
     kanji_model.split_dataset()
@@ -53,7 +41,6 @@ def test_split_dataset(kanji_model):
     )
 
 def test_train(kanji_model):
-    kanji_model.make_unified_subtitles()
     kanji_model.make_kanji_frequency_in_animes()
     kanji_model.make_kanji_data()
     kanji_model.split_dataset()
@@ -64,7 +51,6 @@ def test_train(kanji_model):
     )
 
 def test_make_coeficients(kanji_model):
-    kanji_model.make_unified_subtitles()
     kanji_model.make_kanji_frequency_in_animes()
     kanji_model.make_kanji_data()
     kanji_model.split_dataset()
@@ -80,7 +66,6 @@ def test_make_new_features(kanji_model):
     assert 'Frequency in animes' in kanji_model.new_features
 
 def test_transform_model_to_anime(kanji_model):
-    kanji_model.make_unified_subtitles()
     kanji_model.make_kanji_frequency_in_animes()
     kanji_model.make_kanji_data()
     kanji_model.split_dataset()
@@ -94,7 +79,6 @@ def test_transform_model_to_anime(kanji_model):
     )
 
 def test_replace_frequency_to_anime(kanji_model):
-    kanji_model.make_unified_subtitles()
     kanji_model.make_kanji_frequency_in_animes()
     kanji_model.make_kanji_data()
     kanji_model.split_dataset()
@@ -111,7 +95,6 @@ def test_replace_frequency_to_anime(kanji_model):
     )
 
 def test_make_suggested_order(kanji_model):
-    kanji_model.make_unified_subtitles()
     kanji_model.make_kanji_frequency_in_animes()
     kanji_model.make_kanji_data()
     kanji_model.split_dataset()

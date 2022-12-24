@@ -11,10 +11,10 @@ def test_greeter():
 
 @pytest.fixture
 def test_user():
-    login = 'test_login'
-    name = 'test_name'
-    id = 1
-    anime_ids = [1, 2]
+    login = 'test_user'
+    name = 'Teste-1'
+    id = -1
+    anime_ids = [1619, 62]
 
     anime_list = [
         anime_builder.AnimeBuilder.get_anime().from_id(
@@ -35,12 +35,12 @@ def test_replace_name(test_greeter, test_user):
     greeting = 'Oi, NOME! Teste de greeting'
     assert (
         test_greeter.replace_name(greeting, test_user)
-        == 'Oi, test_name! Teste de greeting'
+        == 'Oi, Teste-1! Teste de greeting'
     )
 
 def test_greet(test_greeter, test_user):
     greeting = test_greeter.greet(test_user)
     assert (
         'NOME' not in greeting and
-        'test_name' in greeting
+        'Teste-1' in greeting
     )

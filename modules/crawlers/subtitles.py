@@ -18,6 +18,9 @@ class Subtitles():
         self.root = extract_root(url)
         self.anime_df = self.get_anime_df()
 
+        self.anime_df = pd.read_csv('data/animes.csv', sep=';')
+        self.anime_df = self.get_anime_df()
+
 
     def is_anime_link(self, link):
         has_strong = '<strong>' in str(link)
@@ -26,9 +29,12 @@ class Subtitles():
 
     def extract_anime_links(self):
         webpage = get_parsed_page(self.url)
-        links = webpage.find_all('a')
-        anime_links = filter(self.is_anime_link, links)
-        return list(anime_links)
+        if webpage is not None:
+            links = webpage.find_all('a')
+            anime_links = filter(self.is_anime_link, links)
+            return list(anime_links)
+        else:
+            return None
     
 
     def make_anime_tuples(self, anime_links):
@@ -44,18 +50,33 @@ class Subtitles():
     
     def get_animes(self):
         anime_links = self.extract_anime_links()
-        anime_tuples = self.make_anime_tuples(anime_links)
-        return anime_tuples
+        if anime_links is not None:
+            anime_tuples = self.make_anime_tuples(anime_links)
+            return anime_tuples
+        else:
+            return None
     
 
-    def get_anime_df(self):
-        anime_df = pd.DataFrame(
-            self.get_animes(),
-            columns=['anime_name', 'anime_path']
-        )
-        anime_df['anime_id'] = anime_df.index
-        return anime_df
+    def open_animes(self):
+        return pd.read_csv('data/animes.csv', sep=';')
 
+
+    def get_anime_df(self):
+        try:
+            anime_df = self.open_animes()
+        except:
+            data = self.get_animes()
+            if data is not None:
+                anime_df = pd.DataFrame(
+                    data,
+                    columns=['anime_name', 'anime_path']
+                )
+                anime_df['anime_id'] = anime_df.index
+                anime_df.to_csv('data/animes.csv', sep=';')
+                return anime_df
+            else:
+                return None
+        
 
     def filter_anime(self, anime_name):
         anime_name = anime_name.lower()
@@ -110,8 +131,33 @@ class Subtitles():
             (url).split()
         )
 
+    
+    def get_pre_downloaded_folders(self):
+        return os.listdir('data/pre_downloaded_subs')
+    
+    def get_pre_downloaded_anime_names(self):
+        folders = self.get_pre_downloaded_folders()
+        return [
+            ' '.join(
+                a.split('_')
+            ).lower() for a in
+            folders
+        ]
 
-    def get_subtitle_files(self, anime):
+
+    def get_folder_name(self, pre_downloaded_anime):
+        folders = self.get_pre_downloaded_folders()
+        animes = self.get_pre_downloaded_anime_names()
+        anime_index = animes.index(pre_downloaded_anime)
+        return 'data/pre_downloaded_subs/' + folders[anime_index]
+
+
+    def is_pre_downloaded(self, anime):
+        pre_downloaded_animes = self.get_pre_downloaded_anime_names()
+        return anime.lower() in pre_downloaded_animes
+    
+    
+    def get_external_subtitlte_files(self, anime):
         webpage = self.get_anime_page(anime)
         
         subtitle_files = self.get_subtitle_file_links(webpage)
@@ -122,7 +168,7 @@ class Subtitles():
 
     
     def get_subtitle_files_df(self, anime):
-        names, links = self.get_subtitle_files(anime)
+        names, links = self.get_external_subtitlte_files(anime)
         subtitle_files_df = pd.DataFrame(
             [], columns=['anime_name', 'subtitle_file_name', 'subtitle_file_link']
         )
@@ -142,7 +188,7 @@ class Subtitles():
         )
 
 
-    def download_subtitle_files(self, subtitle_files_df):
+    def download_external_subtitle_files(self, subtitle_files_df):
         subtitle_content  = []
         filenames = []
 
@@ -159,8 +205,8 @@ class Subtitles():
 
         return subtitle_content, filenames
     
-    
-    def get_subtitle_df(self, anime):
+
+    def get_external_subtitle_df(self, anime):
         subtitle_files_df = self.get_subtitle_files_df(anime)
         subtitle_content, filenames = self.download_subtitle_files(subtitle_files_df)
         
@@ -184,3 +230,41 @@ class Subtitles():
         )
 
         return subtitle_df
+
+    
+    def get_internal_subtitle_df(self, anime):
+        folder = self.get_folder_name(anime)
+        files = [
+            folder + '/' + name
+            for name in os.listdir(folder)
+        ]
+
+        episode_list = []
+
+        for name in files:
+            try:
+                f = open(name, encoding='utf8')
+                content = f.read()
+                subtitles = srt.parse(content)
+                episode_subs = []
+                for sub in subtitles:
+                    episode_subs = episode_subs + [
+                        (anime, name, sub.start, sub.end, sub.content)
+                    ]
+                episode_list += [episode_subs]
+            except:
+                pass
+            
+        subtitle_df = pd.DataFrame(
+            [item for sublist in episode_list for item in sublist],
+            columns=['anime_name', 'filename', 'start_time', 'end_time', 'content']
+        )
+
+        return subtitle_df
+    
+
+    def get_subtitle_df(self, anime):
+        if self.is_pre_downloaded(anime):
+            return self.get_internal_subtitle_df(anime)
+        else:
+            return self.get_external_subtitle_df(anime)
