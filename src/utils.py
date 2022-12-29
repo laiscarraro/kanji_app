@@ -2,7 +2,7 @@
 from googletrans import Translator
 import zipfile, io, requests, re
 import pykakasi
-import fugashi
+import uuid
 import gtts
 
 def extract_zip(filename, max=100, fetch=True, content=True):
@@ -69,7 +69,7 @@ def get_audio(sent):
 def get_translation(sent):
     translator = Translator()
     translation = translator.translate(sent).text
-    return translation
+    return re.sub('\W', ' ', translation)
 
 def get_translation_html(sent):
     translation = get_translation(sent)
@@ -101,3 +101,30 @@ def findLongestConseqSubseq(arr):
             lista_provisoria = []
  
     return ans_list
+
+def make_spoiler_html(sent):
+    traducao = get_translation(sent)
+    id_ = str(uuid.uuid4())
+    return '''
+    <style>
+        #trad'''+ id_ + ''' {
+            text-align:center;
+            position:absolute;
+            z-index:1;
+            width:100%;
+        }
+        #trad'''+ id_ + ''':target {
+            display: none;
+        }
+    </style>
+    <div style="position:relative">
+        <a href="#trad'''+ id_ + '''" style="text-decoration:none;color:grey;">
+            <div id="trad'''+ id_ + '''" style="backgroundColor:#f0f0f0;border-radius:4px;padding:5px;">
+                Tradução
+            </div>
+        </a>
+        <div style="position:absolute;padding:5px;">
+            ''' + traducao + '''
+        </div>
+    </div>
+    '''

@@ -9,7 +9,7 @@ import pytest
 @pytest.fixture
 def test_handler():
     h = kanji_recommendation_handler.KanjiRecommendationHandler()
-    subs = pd.read_csv('data/subtitles.csv', sep=';')
+    subs = pd.read_parquet('data/subtitles.parquet')
     h.set_subtitles(
         subs[subs.anime_name.isin(
             ['shigatsu wa kimi no uso', 'yuri!!! on ice']
@@ -78,7 +78,7 @@ def test_update_metadata(test_handler):
         and 'test2' in metadata_after.filename.values
     )
 
-    metadata_before.to_csv('data/models/metadata.csv', sep=';', index=None)
+    metadata_before.to_parquet('data/models/metadata.parquet', index=False)
 
 def test_save_model(test_handler):
     metadata_before = test_handler.metadata.copy()
@@ -92,7 +92,7 @@ def test_save_model(test_handler):
     )
 
     os.remove('data/models/'+filename)
-    metadata_before.to_csv('data/models/metadata.csv', sep=';', index=None)
+    metadata_before.to_parquet('data/models/metadata.parquet', index=False)
 
 
 def test_train_model(test_handler):
@@ -115,7 +115,7 @@ def test_train_model(test_handler):
     )
 
     os.remove('data/models/'+filename)
-    metadata_before.to_csv('data/models/metadata.csv', sep=';', index=None)
+    metadata_before.to_parquet('data/models/metadata.parquet', index=False)
 
 
 def test_get_model_filename(test_handler):
@@ -150,4 +150,4 @@ def test_get_model_filename(test_handler):
         os.remove('data/models/'+filename2)
     except:
         pass
-    metadata_before.to_csv('data/models/metadata.csv', sep=';', index=None)
+    metadata_before.to_parquet('data/models/metadata.parquet', index=False)

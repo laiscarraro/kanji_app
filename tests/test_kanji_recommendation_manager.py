@@ -37,7 +37,7 @@ def test_update_latest_model_metadata(test_manager):
     assert (
         test_manager.search_latest_model().filename.values[0] == 'test2'
     )
-    before_user_configuration.to_csv('data/models/user_configuration.csv', sep=';', index=None)
+    before_user_configuration.to_parquet('data/models/user_configuration.parquet', index=False)
 
 def test_handle_model_filename(test_manager):
     anime_ids = [62]
@@ -58,8 +58,8 @@ def test_make_default_model(test_manager):
         default_filename.filename.values[0] != 'test'
     )
 
-    before_user_configuration.to_csv('data/models/user_configuration.csv', sep=';', index=None)
-    metadata_before.to_csv('data/models/metadata.csv', sep=';', index=None)
+    before_user_configuration.to_parquet('data/models/user_configuration.parquet', index=False)
+    metadata_before.to_parquet('data/models/metadata.parquet', index=False)
 
 def test_get_latest_model_filename(test_manager):
     filename = test_manager.get_latest_model_filename()

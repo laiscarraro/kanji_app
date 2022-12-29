@@ -5,7 +5,7 @@ import pandas as pd
 class AnimeBuilder():
 
     def __init__(self):
-        self.animes_df = pd.read_csv('data/animes.csv', sep=';')
+        self.animes_df = pd.read_parquet('data/animes.parquet')
         self.subtitle_handler = SubtitleHandler()
 
         self.id = None

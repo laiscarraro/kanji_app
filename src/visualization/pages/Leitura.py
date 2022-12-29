@@ -3,9 +3,9 @@ import streamlit as st
 from modules.managers.kanji_recommendation_manager import KanjiRecommendationManager
 from modules.models.content_dependencies import ContentDependencies
 from modules.models.study_order import StudyOrder
-from src.utils import color_target_kanji, get_audio, get_translation_html, get_anime_info
+from src.utils import color_target_kanji, get_audio, make_spoiler_html, get_anime_info
 
-if st.session_state['user_found']:
+if 'user_found' in st.session_state and st.session_state['user_found']:
     user = st.session_state['session'].get_user()
 
     st.title('Leitura')
@@ -46,8 +46,10 @@ if st.session_state['user_found']:
         st.audio('sent.mp3')
     
         st.markdown(
-            get_translation_html(sent),
+            make_spoiler_html(sent),
             unsafe_allow_html=True
         )
 
         st.markdown('<br>', unsafe_allow_html=True)
+else:
+    st.error('Usuário não encontrado.')

@@ -4,8 +4,8 @@ from modules.builders import anime_builder
 class AnimeManager():
 
     def __init__(self, user):
-        self.animes_df = pd.read_csv('data/animes.csv', sep=';')
-        self.all_animes = pd.read_csv('data/user_anime.csv', sep=';')
+        self.animes_df = pd.read_parquet('data/animes.parquet')
+        self.all_animes = pd.read_parquet('data/user_anime.parquet')
         self.user = user
         self.user_animes = self.all_animes[
             self.all_animes.user_id == user.get_id()
@@ -45,7 +45,7 @@ class AnimeManager():
             [self.all_animes, new_line],
             ignore_index=True
         )
-        new_dataframe.to_csv('data/user_anime.csv', sep=';', index=None)
+        new_dataframe.to_parquet('data/user_anime.parquet', index=False)
     
     def add_anime(self, anime_id):
         added = False
@@ -72,7 +72,7 @@ class AnimeManager():
             ~ this_user |
             (this_user & ~ this_anime)
         ]
-        new_dataframe.to_csv('data/user_anime.csv', sep=';', index=None)
+        new_dataframe.to_parquet('data/user_anime.parquet', index=False)
 
     def remove_anime(self, anime_id):
         removed = False

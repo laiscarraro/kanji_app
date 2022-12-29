@@ -13,7 +13,7 @@ class KanjiRecommendationHandler():
         self.features = self.possible_features
         self.anime_list = []
         self.subtitles = None
-        self.metadata = pd.read_csv('data/models/metadata.csv', sep=';')
+        self.metadata = pd.read_parquet('data/models/metadata.parquet')
         self.metadata['anime_ids'] =  self.metadata['anime_ids'].apply(str)
 
     def get_possible_features(self):
@@ -56,7 +56,7 @@ class KanjiRecommendationHandler():
             [self.metadata, new_line],
             ignore_index=True
         )
-        self.metadata.to_csv('data/models/metadata.csv', sep=';', index=None)
+        self.metadata.to_parquet('data/models/metadata.parquet', index=False)
     
     def save_model(self, model):
         filename = 'kanji_order_' + str(uuid.uuid4()) + '.parquet'

@@ -1,10 +1,10 @@
 import streamlit as st
-from st_aggrid import AgGrid, ColumnsAutoSizeMode
+from st_aggrid import AgGrid
 from st_aggrid import GridUpdateMode
 from st_aggrid.grid_options_builder import GridOptionsBuilder
 from modules.managers.kanji_recommendation_manager import KanjiRecommendationManager
 
-if st.session_state['user_found']:
+if 'user_found' in st.session_state and st.session_state['user_found']:
     user = st.session_state['session'].get_user()
 
     st.title('Dicionário de Kanji')
@@ -50,6 +50,7 @@ if st.session_state['user_found']:
             'Kunyomi', 'Onyomi'
         ]]
     )
+
     gd.configure_selection(
         selection_mode='multiple',
         use_checkbox=True,
@@ -68,7 +69,8 @@ if st.session_state['user_found']:
             'Kunyomi', 'Onyomi'
         ]],
         gridOptions=options,
-        update_mode=GridUpdateMode.MANUAL
+        update_mode=GridUpdateMode.MANUAL,
+        theme='alpine'
     )
 
     selected = grid["selected_rows"]
@@ -79,3 +81,5 @@ if st.session_state['user_found']:
             )
         )
         st.success('Kanjis conhecidos atualizados!')
+else:
+    st.error('Usuário não encontrado.')

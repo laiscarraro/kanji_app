@@ -15,7 +15,7 @@ def test_user_no_animes():
 
 @pytest.fixture
 def user_animes(test_user):
-    animes = pd.read_csv('data/user_anime.csv', sep=';')
+    animes = pd.read_parquet('data/user_anime.parquet')
     return animes[animes.user_id == test_user.id]
 
 @pytest.fixture
@@ -52,7 +52,7 @@ def test_add_anime_to_dataframe(test_anime_manager, user_animes, test_user):
     has_before = 2031 in user_animes.anime_id.values
     test_anime_manager.add_anime_to_dataframe(2031)
 
-    user_animes_after = pd.read_csv('data/user_anime.csv', sep=';')
+    user_animes_after = pd.read_parquet('data/user_anime.parquet')
     user_animes = user_animes_after[user_animes_after.user_id == test_user.id]
     has_after = 2031 in user_animes.anime_id.values
     assert not has_before and has_after
@@ -65,7 +65,7 @@ def test_add_anime(test_anime_manager, user_animes, test_user):
         2031 in user_animes.anime_id.values
     )
     added = test_anime_manager.add_anime(2031)
-    user_animes_after = pd.read_csv('data/user_anime.csv', sep=';')
+    user_animes_after = pd.read_parquet('data/user_anime.parquet')
     user_animes = user_animes_after[user_animes_after.user_id == test_user.id]
     has_after = (
         test_anime_manager.user.has_anime(2031) and
@@ -82,7 +82,7 @@ def test_add_anime_user_with_no_anime(test_anime_manager_no_animes, user_animes,
         2031 in user_animes.anime_id.values
     )
     added = test_anime_manager_no_animes.add_anime(2031)
-    user_animes_after = pd.read_csv('data/user_anime.csv', sep=';')
+    user_animes_after = pd.read_parquet('data/user_anime.parquet')
     user_animes = user_animes_after[user_animes_after.user_id == test_user_no_animes.id]
     has_after = (
         test_anime_manager_no_animes.user.has_anime(2031) and
@@ -103,25 +103,25 @@ def test_remove_anime_from_user(test_anime_manager):
 
 def test_remove_anime_from_dataframe(test_anime_manager, user_animes, test_user):
     has_before = 62 in user_animes.anime_id.values
-    user_animes_before = pd.read_csv('data/user_anime.csv', sep=';').copy()
+    user_animes_before = pd.read_parquet('data/user_anime.parquet').copy()
     test_anime_manager.remove_anime_from_dataframe(62)
 
-    user_animes_after = pd.read_csv('data/user_anime.csv', sep=';')
+    user_animes_after = pd.read_parquet('data/user_anime.parquet')
     user_animes = user_animes_after[user_animes_after.user_id == test_user.id]
     has_after = 62 in user_animes.anime_id.values
     assert has_before and not has_after
 
-    user_animes_before.to_csv('data/user_anime.csv', sep=';', index=None)
+    user_animes_before.to_parquet('data/user_anime.parquet', index=False)
 
 def test_remove_anime(test_anime_manager, user_animes, test_user):
     has_before = (
         test_anime_manager.user.has_anime(62) and
         62 in user_animes.anime_id.values
     )
-    user_animes_before = pd.read_csv('data/user_anime.csv', sep=';').copy()
+    user_animes_before = pd.read_parquet('data/user_anime.parquet').copy()
     removed = test_anime_manager.remove_anime(62)
 
-    user_animes_after = pd.read_csv('data/user_anime.csv', sep=';')
+    user_animes_after = pd.read_parquet('data/user_anime.parquet')
     user_animes = user_animes_after[user_animes_after.user_id == test_user.id]
     has_after = (
         test_anime_manager.user.has_anime(62) and
@@ -130,4 +130,4 @@ def test_remove_anime(test_anime_manager, user_animes, test_user):
     assert has_before and removed and not has_after
 
     test_anime_manager.add_anime_to_user(62)
-    user_animes_before.to_csv('data/user_anime.csv', sep=';', index=None)
+    user_animes_before.to_parquet('data/user_anime.parquet', index=False)

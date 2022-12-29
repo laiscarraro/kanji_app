@@ -62,7 +62,7 @@ class User:
         return unified_subtitles
     
     def update_kanji(self, kanji):
-        user_kanji = pd.read_csv('data/user_kanji.csv', sep=';')
+        user_kanji = pd.read_parquet('data/user_kanji.parquet')
         not_this_user = user_kanji[
             user_kanji.user_id != self.get_id()
         ]
@@ -75,4 +75,4 @@ class User:
             [not_this_user, new_kanji],
             ignore_index=True
         )
-        final_df.to_csv('data/user_kanji.csv', sep=';', index=None)
+        final_df.to_parquet('data/user_kanji.parquet', index=False)

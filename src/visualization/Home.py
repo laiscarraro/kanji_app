@@ -2,6 +2,7 @@ import streamlit as st
 from modules.session import Session
 from modules.greeter import Greeter
 from modules.managers.anime_manager import AnimeManager
+from login import make_login
 
 st.set_page_config(layout="wide")
 
@@ -10,12 +11,12 @@ if 'session' not in st.session_state:
 
 if 'user_found' not in st.session_state:
     st.session_state['user_found'] = False
+if 'authetication_status' not in st.session_state:
+    st.session_state['authetication_status'] = None
 
-user_login = st.selectbox('Escolha o login', [
-    'laiscarraro', 'pablito'
-])
+user_login = make_login()
 
-if user_login != '':
+if user_login is not None:
     user_found = st.session_state['session'].set_user(user_login)
     if user_found:
         st.session_state['user_found'] = True

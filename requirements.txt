@@ -1,5 +1,6 @@
 pandas
 bs4
+ankipandas
 requests
 seaborn
 mecab
@@ -17,3 +18,4 @@ fugashi[unidic-lite]
 furigana
 googletrans==3.1.0a0
 gtts
+streamlit-authenticator

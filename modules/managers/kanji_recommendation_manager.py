@@ -8,7 +8,7 @@ class KanjiRecommendationManager():
         self.user = user
         self.subtitles = self.user.get_unified_subtitles()
         self.handler = KanjiRecommendationHandler()
-        self.user_configuration = pd.read_csv('data/models/user_configuration.csv', sep=';')
+        self.user_configuration = pd.read_parquet('data/models/user_configuration.parquet')
     
     def get_animes_from_ids(self, anime_ids):
         all_animes = self.user.get_animes()
@@ -52,7 +52,7 @@ class KanjiRecommendationManager():
             [self.user_configuration, new_line],
             ignore_index=True
         )
-        self.user_configuration.to_csv('data/models/user_configuration.csv', sep=';', index=None)
+        self.user_configuration.to_parquet('data/models/user_configuration.parquet', index=False)
     
     def handle_model_filename(self, anime_ids, features):
         anime_list = self.get_animes_from_ids(anime_ids)

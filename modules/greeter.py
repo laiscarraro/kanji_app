@@ -4,7 +4,7 @@ import pandas as pd
 class Greeter():
 
     def __init__(self):
-        self.greetings = pd.read_csv('data/greetings.csv', sep=';')
+        self.greetings = pd.read_parquet('data/greetings.parquet')
     
     def replace_name(self, greeting, user):
         return re.sub('NOME', user.get_name(), greeting)

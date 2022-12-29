@@ -26,7 +26,7 @@ def test_update_subtitles_df(test_handler):
 
     assert len(new_df) >= len(old_df)
 
-    old_df.to_csv('data/subtitles.csv', sep=';', index=None)
+    old_df.to_parquet('data/subtitles.parquet', index=False)
 
 def test_get_subtitles(test_handler):
     old_df = test_handler.subtitles_df.copy()
@@ -40,4 +40,4 @@ def test_get_subtitles(test_handler):
         len(new_df) >= len(intermediate_df)
     )
 
-    old_df.to_csv('data/subtitles.csv', sep=';', index=None)
+    old_df.to_parquet('data/subtitles.parquet', index=False)

@@ -18,7 +18,7 @@ class Subtitles():
         self.root = extract_root(url)
         self.anime_df = self.get_anime_df()
 
-        self.anime_df = pd.read_csv('data/animes.csv', sep=';')
+        self.anime_df = pd.read_parquet('data/animes.parquet')
         self.anime_df = self.get_anime_df()
 
 
@@ -58,7 +58,7 @@ class Subtitles():
     
 
     def open_animes(self):
-        return pd.read_csv('data/animes.csv', sep=';')
+        return pd.read_parquet('data/animes.parquet')
 
 
     def get_anime_df(self):
@@ -72,7 +72,7 @@ class Subtitles():
                     columns=['anime_name', 'anime_path']
                 )
                 anime_df['anime_id'] = anime_df.index
-                anime_df.to_csv('data/animes.csv', sep=';')
+                anime_df.to_parquet('data/animes.parquet', index=False)
                 return anime_df
             else:
                 return None

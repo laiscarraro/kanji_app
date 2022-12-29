@@ -1,0 +1,12 @@
+credentials:
+  usernames:
+    laiscarraro:
+      email: laiscarraro@alumni.com.br
+      name: Laís Carraro
+      password: $2b$12$gpKUDbHHYHI7/wGUX.47I.Hy9OkFDCG.i2YhdF252vzKV1piOCezm # lalatop
+cookie:
+  expiry_days: 30
+  key: 2TcYNUeOFDfdomLR
+  name: Kanjinator
+preauthorized:
+  emails:

@@ -5,9 +5,9 @@ import pandas as pd
 class UserBuilder():
     
     def __init__(self):
-        self.users_df = pd.read_csv('data/users.csv', sep=';')
-        self.user_anime_df = pd.read_csv('data/user_anime.csv', sep=';')
-        self.user_kanji_df = pd.read_csv('data/user_kanji.csv', sep=';')
+        self.users_df = pd.read_parquet('data/users.parquet')
+        self.user_anime_df = pd.read_parquet('data/user_anime.parquet')
+        self.user_kanji_df = pd.read_parquet('data/user_kanji.parquet')
 
         self.user_information = None
         self.id = None
