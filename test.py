@@ -1,5 +1,5 @@
 import streamlit as st
-import requests, re, time
+import requests, time
 from bs4 import BeautifulSoup
 
 anime = '-'.join(st.text_input('Escreva o nome do anime').lower().split())
