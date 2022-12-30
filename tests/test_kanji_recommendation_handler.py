@@ -9,7 +9,7 @@ import pytest
 @pytest.fixture
 def test_handler():
     h = kanji_recommendation_handler.KanjiRecommendationHandler()
-    subs = pd.read_parquet('data/subtitles.parquet')
+    subs = pd.read_csv('data/subtitles.csv', sep=';')
     h.set_subtitles(
         subs[subs.anime_name.isin(
             ['shigatsu wa kimi no uso', 'yuri!!! on ice']

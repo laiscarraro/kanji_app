@@ -3,7 +3,7 @@ import streamlit as st
 from modules.managers.kanji_recommendation_manager import KanjiRecommendationManager
 from modules.models.content_dependencies import ContentDependencies
 from modules.models.study_order import StudyOrder
-from src.utils import color_target_kanji, get_audio, make_spoiler_html, get_anime_info
+from src.utils import color_target_kanji, get_audio, make_spoiler_html, get_anime_info, get_player_link
 
 if 'user_found' in st.session_state and st.session_state['user_found']:
     user = st.session_state['session'].get_user()
@@ -21,12 +21,9 @@ if 'user_found' in st.session_state and st.session_state['user_found']:
 
     dependencies = ContentDependencies(user.get_unified_subtitles())
     study = StudyOrder(unlocked_kanji, dependencies, kanji_order)
-    all_sentences = study.get_unlocked_sentences()
-    sentences = all_sentences.drop_duplicates(
-        subset=['anime_name', 'content']
-    )
+    sequences = study.get_unlocked_sequences()
 
-    for _, row in sentences.sample(10).iterrows():
+    for _, row in sequences.sample(10).iterrows():
         sent = row.content
 
         st.markdown(
@@ -48,6 +45,13 @@ if 'user_found' in st.session_state and st.session_state['user_found']:
         st.markdown(
             make_spoiler_html(sent),
             unsafe_allow_html=True
+        )
+        
+        get_player_link(
+            row.anime_name,
+            row.filename,
+            row.content,
+            row.start_time
         )
 
         st.markdown('<br>', unsafe_allow_html=True)

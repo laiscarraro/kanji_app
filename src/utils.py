@@ -1,6 +1,8 @@
 # External libs
 from googletrans import Translator
-import zipfile, io, requests, re
+import zipfile, io, requests, re, time
+from bs4 import BeautifulSoup
+import streamlit as st
 import pykakasi
 import uuid
 import gtts
@@ -80,10 +82,68 @@ def get_minute(start_time):
     time = re.findall('\d\d:\d\d:\d\d', start_time)
     return ' '.join(time)
 
+def get_episode_number(filename):
+    patterns = [
+        's\d+e\d+',
+        '\d+.srt',
+        '\\b\d+\\b'
+    ]
+    pattern = '|'.join(patterns)
+    episode_number = re.sub(
+        '.srt', '',
+        ''.join(
+            re.findall(pattern, filename.lower())
+        )
+    )
+    return episode_number
+
+def make_episode_link(anime_name, episode_number):
+    anime_clean = re.sub('\W', ' ', anime_name)
+    anime = '-'.join(anime_clean.split())
+    url = 'http://animefire.net/animes/'
+    try:
+        episode_number = int(episode_number)
+        return url + anime + '/' + str(episode_number)
+    except:
+        return ''
+
+def get_episode_video_url(url):
+    headers = {
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36'
+    }
+    page = requests.get(url, headers=headers)
+    time.sleep(0.5)
+    webpage = BeautifulSoup(page.text, 'html.parser')
+    iframe = webpage.find_all('iframe')
+    video_url = iframe[0]['src']
+
+    return video_url
+
 def get_anime_info(anime_name, filename, start_time):
     minute = get_minute(start_time)
     episode = filename.split('/')[-1]
     return ' ***' + anime_name + '*** (' + episode + ', ' + minute + ')'
+
+def get_player_link(anime_name, filename, content, start_time):
+    episode_number = get_episode_number(filename)
+    anime_clean = re.sub('\W', ' ', anime_name)
+    link = "Player?"
+    link += "episode="+episode_number
+    link += "&name="+'+'.join(anime_clean.split())
+    link += "&content="+'+'.join(content)
+    link += '&start_time='+str(get_minute(start_time))
+
+    st.write('''
+        <br>
+        <a target="_self" style="text-decoration:none;color:gray;" href="'''+ link +'''">
+            <button class="css-1x8cf1d edgvbvh10">
+                Assistir
+            </button>
+        </a>
+        <br>
+        ''', unsafe_allow_html=True
+    )
+    st.markdown('---')
 
 def findLongestConseqSubseq(arr):
     n = len(arr)
@@ -120,7 +180,7 @@ def make_spoiler_html(sent):
     <div style="position:relative">
         <a href="#trad'''+ id_ + '''" style="text-decoration:none;color:grey;">
             <div id="trad'''+ id_ + '''" style="backgroundColor:#f0f0f0;border-radius:4px;padding:5px;">
-                Tradução
+                Exibir tradução
             </div>
         </a>
         <div style="position:absolute;padding:5px;">

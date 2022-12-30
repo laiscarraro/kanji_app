@@ -14,6 +14,7 @@ pytest
 pykakasi
 srt
 streamlit-aggrid
+fastparquet
 fugashi[unidic-lite]
 furigana
 googletrans==3.1.0a0

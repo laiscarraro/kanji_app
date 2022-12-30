@@ -4,7 +4,7 @@ import pandas as pd
 class SubtitleHandler():
 
     def __init__(self):
-        self.subtitles_df = pd.read_parquet('data/subtitles.parquet')
+        self.subtitles_df = pd.read_csv('data/subtitles.csv', sep=';')
         self.crawler = subtitles.Subtitles()
     
     def download_subtitles(self, anime_name):
@@ -15,7 +15,7 @@ class SubtitleHandler():
             [self.subtitles_df, new_df],
             ignore_index=True
         )
-        self.subtitles_df.to_parquet('data/subtitles.parquet', index=False)
+        self.subtitles_df.to_csv('data/subtitles.csv', sep=';', index=None)
     
     def get_subtitles(self, anime_name):
         if anime_name in self.subtitles_df.anime_name.values:
