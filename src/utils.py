@@ -1,7 +1,6 @@
 # External libs
 from googletrans import Translator
 import zipfile, io, requests, re, time
-from bs4 import BeautifulSoup
 import streamlit as st
 import pykakasi
 import uuid
@@ -100,24 +99,33 @@ def get_episode_number(filename):
 def make_episode_link(anime_name, episode_number):
     anime_clean = re.sub('\W', ' ', anime_name)
     anime = '-'.join(anime_clean.split())
-    url = 'http://animefire.net/animes/'
+
+    url = 'https://animefire.net/video/'
+
     try:
         episode_number = int(episode_number)
         return url + anime + '/' + str(episode_number)
     except:
         return ''
 
-def get_episode_video_url(url):
+def get_episode_video_url(data_video_link):
     headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36'
     }
-    page = requests.get(url, headers=headers)
-    time.sleep(0.5)
-    webpage = BeautifulSoup(page.text, 'html.parser')
-    iframe = webpage.find_all('iframe')
-    video_url = iframe[0]['src']
 
-    return video_url
+    data_video_request = requests.get(
+        data_video_link,
+        headers=headers
+    )
+    time.sleep(0.5)
+
+    try:
+        return 'iframe', data_video_request.json()['token']
+    except:
+        try:
+            return 'video', data_video_request.json()['data'][0]['src']
+        except:
+            return None
 
 def get_anime_info(anime_name, filename, start_time):
     minute = get_minute(start_time)

@@ -1,70 +1,81 @@
 import streamlit as st
-from modules.session import Session
 from modules.greeter import Greeter
 from modules.managers.anime_manager import AnimeManager
-from login import make_login
+from src.visualization.login import initialize_page
 
-st.set_page_config(layout="wide")
-
-if 'session' not in st.session_state:
-    st.session_state['session'] = Session()
-
-if 'user_found' not in st.session_state:
-    st.session_state['user_found'] = False
-if 'authetication_status' not in st.session_state:
-    st.session_state['authetication_status'] = None
-
-user_login = make_login()
-
-if user_login is not None:
-    user_found = st.session_state['session'].set_user(user_login)
-    if user_found:
-        st.session_state['user_found'] = True
-    else:
-        st.warning('Não encontrei esse login :(')
-
-if st.session_state['user_found']:
+if initialize_page():
     greeter = Greeter()
     user = st.session_state['session'].get_user()
     user_animes = user.get_animes_df()
 
     st.markdown('## ' + greeter.greet(user))
-    st.markdown('Você tem ' + str(user.count_animes()) + ' animes.')
+    
+    tabs = st.tabs(['Estatísticas', 'Configurar animes', 'Configurar decks do Anki'])
 
-    st.dataframe(user_animes)
+    with tabs[0]:
+        st.write('Em construção :)')
 
-    with st.expander('Adicionar animes'):
-        manager = AnimeManager(user)
-        available = manager.get_available_animes()
+    with tabs[1]:
+        st.markdown('Você tem ' + str(user.count_animes()) + ' animes.')
+        st.dataframe(user_animes)
 
-        new_anime = st.selectbox(
-            label='Selecione o anime que você quer adicionar',
-            options=available.anime_id.values,
-            format_func=(
-                lambda id: available[
-                    available.anime_id == id
-                ].anime_name.values[0]
-            )
-        )
-
-        if st.button('Adicionar'):
-            manager.add_anime(new_anime)
-            st.experimental_rerun()
-
-    if user.count_animes() > 0:
-        with st.expander('Remover animes'):
+        with st.expander('Adicionar animes'):
             manager = AnimeManager(user)
+            available = manager.get_available_animes()
 
-            old_anime = st.selectbox(
-                label='Selecione o anime que você quer remover',
-                options=user_animes.id.values,
+            new_anime = st.selectbox(
+                label='Selecione o anime que você quer adicionar',
+                options=available.anime_id.values,
                 format_func=(
-                    lambda id: user_animes[
-                        user_animes.id == id
-                    ].name.values[0]
+                    lambda id: available[
+                        available.anime_id == id
+                    ].anime_name.values[0]
                 )
             )
 
-            if st.button('Remover'):
-                manager.remove_anime(old_anime)
+            if st.button('Adicionar'):
+                manager.add_anime(new_anime)
                 st.experimental_rerun()
+
+        if user.count_animes() > 0:
+            with st.expander('Remover animes'):
+                manager = AnimeManager(user)
+
+                old_anime = st.selectbox(
+                    label='Selecione o anime que você quer remover',
+                    options=user_animes.id.values,
+                    format_func=(
+                        lambda id: user_animes[
+                            user_animes.id == id
+                        ].name.values[0]
+                    )
+                )
+
+                if st.button('Remover'):
+                    manager.remove_anime(old_anime)
+                    st.experimental_rerun()
+    
+    with tabs[2]:
+        anki_manager = st.session_state['anki_manager']
+        user_decks = anki_manager.get_user_decks()
+
+        st.write('Você tem ' + str(len(user_decks)) + ' decks.')
+        st.dataframe(user_decks)
+
+        with st.expander('Editar decks'):
+            kanji_decks = st.multiselect(
+                'Escolha seus decks de Kanji',
+                options=anki_manager.get_available_decks(),
+                default=anki_manager.get_kanji_decks()
+            )
+            word_decks = st.multiselect(
+                'Escolha seus decks de Palavras',
+                options=anki_manager.get_available_decks(),
+                default=anki_manager.get_word_decks()
+            )
+            if st.button('Atualizar'):
+                if (
+                    anki_manager.set_kanji_decks(kanji_decks) and
+                    anki_manager.set_word_decks(word_decks)
+                ):
+                    st.experimental_rerun()

@@ -3,12 +3,13 @@ from st_aggrid import AgGrid
 from st_aggrid import GridUpdateMode
 from st_aggrid.grid_options_builder import GridOptionsBuilder
 from modules.managers.kanji_recommendation_manager import KanjiRecommendationManager
+from src.visualization.login import initialize_page
 
-if 'user_found' in st.session_state and st.session_state['user_found']:
+if initialize_page():
     user = st.session_state['session'].get_user()
 
     st.title('Dicionário de Kanji')
-    st.markdown('Saiba quais Kanji estudar primeiro para entender seus animes com mais facilidade. Marque na tabela abaixo quais Kanji você já conhece, para que eles sejam liberados em seus estudos. Após selecionar, clique em "Update". Você pode configurar as suas recomendações abaixo.')
+    st.markdown('Saiba quais Kanji estudar primeiro para entender seus animes com mais facilidade. Na tabela abaixo, estão marcados os Kanji que você já conhece, segundo o seu deck do Anki. Estude mais Kanji para que eles sejam liberados em seus estudos! Você pode configurar as suas recomendações abaixo.')
 
 
     user_animes = user.get_animes_df()
@@ -39,7 +40,7 @@ if 'user_found' in st.session_state and st.session_state['user_found']:
             )
             recommendation = recommender.get_latest_model()
         
-    known_kanji = [i for i in user.get_kanji()]
+    known_kanji = st.session_state['anki_manager'].get_unlocked_kanji()
     kanji_index = recommendation[
         recommendation.Kanji.isin(known_kanji)
     ].index.tolist()
@@ -53,7 +54,9 @@ if 'user_found' in st.session_state and st.session_state['user_found']:
 
     gd.configure_selection(
         selection_mode='multiple',
-        use_checkbox=True,
+        suppressRowDeselection=True,
+        suppressRowClickSelection=True,
+        use_checkbox=False,
         pre_selected_rows=kanji_index
     )
     gd.configure_pagination(
@@ -69,17 +72,6 @@ if 'user_found' in st.session_state and st.session_state['user_found']:
             'Kunyomi', 'Onyomi'
         ]],
         gridOptions=options,
-        update_mode=GridUpdateMode.MANUAL,
+        update_mode=GridUpdateMode.NO_UPDATE,
         theme='alpine'
     )
-
-    selected = grid["selected_rows"]
-    if len(selected) > 0:
-        user.update_kanji(
-            ''.join(
-                [i['Kanji'] for i in selected]
-            )
-        )
-        st.success('Kanjis conhecidos atualizados!')
-else:
-    st.error('Usuário não encontrado.')

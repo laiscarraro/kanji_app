@@ -5,8 +5,9 @@ from modules.managers.kanji_recommendation_manager import KanjiRecommendationMan
 from modules.models.content_dependencies import ContentDependencies
 from modules.models.study_order import StudyOrder
 from src.utils import color_target_kanji, get_anime_info, get_audio, make_spoiler_html
+from src.visualization.login import initialize_page
 
-if 'user_found' in st.session_state and st.session_state['user_found']:
+if initialize_page():
     user = st.session_state['session'].get_user()
 
     st.title('Estudos de Kanji')
@@ -27,15 +28,20 @@ if 'user_found' in st.session_state and st.session_state['user_found']:
             if example.strip() != ''
         ]
     
+    known_kanji = st.session_state['anki_manager'].get_unlocked_kanji()
     unlocked_kanji = kanji_order[
         (kanji_order.Kanji.isin(
-            [k for k in user.get_kanji()]
+            known_kanji
         )) |
         (kanji_order.Kanji == kanji)
     ]
 
     dependencies = ContentDependencies(user.get_unified_subtitles())
-    study = StudyOrder(unlocked_kanji, dependencies, kanji_order)
+    study = StudyOrder(
+        dependencies=dependencies,
+        unlocked_kanji=unlocked_kanji,
+        kanji_order=kanji_order
+    )
     all_sentences = study.get_unlocked_sentences()
     sentences = all_sentences[
         all_sentences.content.apply(
@@ -59,14 +65,7 @@ if 'user_found' in st.session_state and st.session_state['user_found']:
             '- ' + kanji_data['Meaning'].values[0].capitalize()
         )
 
-        if kanji not in user.get_kanji():
-            if st.button('Marcar como concluído'):
-                user.update_kanji(
-                    user.get_kanji() + kanji
-                )
-                st.balloons()
-                st.success('Kanji adicionado com sucesso!')
-        else:
+        if kanji in known_kanji:
             st.success('Kanji conhecido')
 
     with c2:
@@ -129,5 +128,3 @@ if 'user_found' in st.session_state and st.session_state['user_found']:
                 )
 
                 st.markdown('<br>', unsafe_allow_html=True)
-else:
-    st.error('Usuário não encontrado.')

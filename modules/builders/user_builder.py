@@ -7,14 +7,12 @@ class UserBuilder():
     def __init__(self):
         self.users_df = pd.read_parquet('data/users.parquet')
         self.user_anime_df = pd.read_parquet('data/user_anime.parquet')
-        self.user_kanji_df = pd.read_parquet('data/user_kanji.parquet')
 
         self.user_information = None
         self.id = None
         self.name = None
         self.login = None
         self.animes = []
-        self.kanji = ''
     
     @staticmethod
     def get_user():
@@ -50,19 +48,6 @@ class UserBuilder():
             for id in anime_ids
         ]
     
-    def get_kanji(self):
-        kanji = self.user_kanji_df[
-            self.user_kanji_df.user_id == self.id
-        ]
-        if len(kanji) == 0:
-            return ''
-        else:
-            return kanji.kanji.values[0]
-
-    def set_kanji(self):
-        kanji = self.get_kanji()
-        self.kanji = kanji
-    
     def build(self):
         self.set_user_information()
 
@@ -70,14 +55,12 @@ class UserBuilder():
             self.set_id()
             self.set_name()
             self.set_animes()
-            self.set_kanji()
 
             return User(
                 id = self.id,
                 name = self.name,
                 login = self.login,
-                animes = self.animes,
-                kanji = self.kanji
+                animes = self.animes
             )
         
         else:

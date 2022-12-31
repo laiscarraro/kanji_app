@@ -3,7 +3,8 @@ bs4
 ankipandas
 requests
 seaborn
-mecab
+mecab-python3
+ipadic
 numpy
 streamlit
 scikit-learn
